@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  acsightapi:
+    container_name: demo-container
+    image: ${DOCKER_REGISTRY-}acsightapi
+    build:
+      context: .
+      dockerfile: AcSightAPI/Dockerfile
+    ports:
+       - 8001:80 

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Validators": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
