@@ -1,0 +1,81 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@using NotificationBlazor.Data
+@inject NavigationManager NavigationManager
+
+<div id="noti_Container">
+    <div class="ikrNoti_Counter">@currentUserMsgList.Count()</div>
+    <div class="ikrNoti_Button" style="background:#2E467C;" @onclick="NotificationHideShow"></div>
+    <div class="ikrNotifications" style="display: @BoxCss !important" @onclick="NotificationHideShow">
+        <h3>Notifications (<span class="notiCounterOnHead">@currentUserMsgList.Count()</span>)</h3>
+        <div class="ikrNotificationItems">
+            @foreach(var nmObj in currentUserMsgList)
+            {
+                <div class="ikrSingleNotDiv" notiId="@nmObj.MsgId">
+                    <h4 class="ikrNotiPropName">Sender: @nmObj.SenderName</h4>
+                    <h5 class="ikrNotiTitle">@nmObj.MsgTitle</h5>
+                    <div class="ikrNotificationBody">@nmObj.MsgBody</div>
+                    <div class="ikrNotiCreatedDate">@nmObj.MsgDateSt</div>
+                </div>
+            }
+        </div>
+        <div class="ikrSeeAll"><a href="#">See All</a></div>
+    </div>
+</div>
+
+<br />
+<br />
+
+<input type="text" class="form-control" @bind="notificationMessage.SenderName" placeholder="Sender Name"/>
+<input type="text" class="form-control" @bind="notificationMessage.ReceiverName" placeholder="Reciever Name" />
+<input type="text" class="form-control" @bind="notificationMessage.MsgTitle" placeholder="Title" />
+<input type="text" class="form-control" @bind="notificationMessage.MsgBody" placeholder="Message" />
+
+<br />
+<br />
+<button @onclick="Send" disbled="@(!IsConnected)">Send</button>
+
+@code{
+    private List<NotificationMessage> allNotificationMsg = new List<NotificationMessage>();
+    private List<NotificationMessage> currentUserMsgList = new List<NotificationMessage>();
+    private NotificationMessage notificationMessage = new NotificationMessage();
+
+    private HubConnection hubConnection;
+    private string BoxCss = "none";
+
+    protected override async Task OnInitializedAsync() 
+    {
+        hubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/chatHub")).Build();
+        hubConnection.On<string, string, string, string>("ReceiveMessage", (senderName, receiverName, title, message) =>
+        {
+            allNotificationMsg.Add(new NotificationMessage()
+            {
+                MsgId = allNotificationMsg.Count() +1,
+                SenderName = senderName,
+                ReceiverName = receiverName,
+                MsgTitle = title,
+                MsgBody = message
+            });
+            currentUserMsgList = allNotificationMsg.Where(x => x.SenderName != notificationMessage.SenderName).ToList();
+            StateHasChanged();
+        });
+            await hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        await hubConnection.SendAsync("sendMessage",notificationMessage.SenderName
+                                                   ,notificationMessage.ReceiverName
+                                                   , notificationMessage.MsgTitle
+                                                   , notificationMessage.MsgBody);
+        notificationMessage.MsgTitle = "";
+        notificationMessage.MsgBody = "";
+    }
+
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+    private void NotificationHideShow()
+    {
+        if (BoxCss == "none") BoxCss = "block";
+        else BoxCss = "none";
+    }
+}

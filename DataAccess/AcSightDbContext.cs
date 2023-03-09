@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess
+namespace DataAcces
 {
     public class AcSightDbContext: DbContext
     {
@@ -14,11 +14,11 @@ namespace DataAccess
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            /* SQL Server DB connection.
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB; Database=AcSight; Trusted_Connection=true");*/
+            //SQL Server DB connection.
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB; Database=Personals; Trusted_Connection=true");
             
             // In Memory Cache DB Connection.
-            optionsBuilder.UseInMemoryDatabase(databaseName: "StudentDB");
+            //optionsBuilder.UseInMemoryDatabase(databaseName: "StudentDB");
         }
 
         public DbSet<Personal> Personals { get; set; }
