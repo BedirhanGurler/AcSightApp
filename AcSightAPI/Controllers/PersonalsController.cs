@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace WebAPI.Controllers
 {
-    [Route("acsight/[controller]")]
+    [Route("app/acsight")]
     [ApiController]
     [Authorize]
     public class PersonalControllers : ControllerBase
@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
             _loggerManager = loggerManager;
         }
 
-        [HttpGet("getall")]
+        [HttpGet("get-all")]
         public List<Personal> Get()
         {
             try
@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
                
         }
 
-        [HttpGet("getpassivepersonals")]
+        [HttpGet("get-passive-personals")]
         public List<Personal> GetPassivePersonals()
         {
             try
@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("filterbytitle/{title}")]
+        [HttpGet("filter-by-title/{title}")]
         public List<Personal> GetByTitle([FromQuery] Personal personal, string title)
         {
             try
@@ -70,7 +70,7 @@ namespace WebAPI.Controllers
             
         }
 
-        [HttpGet("getid/{id}")]
+        [HttpGet("get-id/{id}")]
         public Personal GetById(int id)
         {
             try

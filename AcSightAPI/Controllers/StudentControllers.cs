@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace AcSightAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("app/acsight")]
     [ApiController]
     public class StudentControllers : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace AcSightAPI.Controllers
             _loggerManager = loggerManager;
         }
 
-        [HttpGet("getallstudents")]
+        [HttpGet("get-all-students")]
         public List<Student> GetStudents()
         {
             try
@@ -35,7 +35,7 @@ namespace AcSightAPI.Controllers
             }
         }
 
-        [HttpPost("addnewstudent")]
+        [HttpPost("add-new-student")]
         public Student AddStudent(Student student)
         {
             try
